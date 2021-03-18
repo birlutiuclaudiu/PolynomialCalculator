@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+//este folosită pentru a crea un JPanel cu informațiile legate de
 public class InfoPanel extends JPanel {
-    Font f=new Font("SansSerif",Font.BOLD,15);
 
-    Font f1=new Font("SansSerif",Font.BOLD,12);
+    Font f=new Font("SansSerif",Font.BOLD,15);
+    Font fontReguli =new Font("SansSerif",Font.BOLD,12);
+
     public InfoPanel() {
         this.setPreferredSize(new Dimension(750, 900));
         this.setMinimumSize(new Dimension(750, 900));
@@ -18,7 +20,7 @@ public class InfoPanel extends JPanel {
         info1.add(l1);
         JPanel monoameValide = new JPanel();
         monoameValide.setLayout(new GridLayout(8 , 2));
-        monoameValide.setAlignmentX(JLabel.CENTER);
+        monoameValide.setAlignmentX(0.5f);
         monoameValide.setFont(f);
         monoameValide.add(new JLabel("+a*X^b"));
         monoameValide.add(new JLabel("-a*X^b"));
@@ -56,12 +58,12 @@ public class InfoPanel extends JPanel {
         rulesPanel.setLayout(new GridLayout(rulesLabels.size(),1));
         rulesPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
         for(JLabel rule: rulesLabels){
-            rule.setFont(f1);
+            rule.setFont(fontReguli);
             rulesPanel.add(rule);
         }
         info1.add(rulesPanel);
         this.add(info1);
-        Color background=new Color(222, 194, 164);
+        Color background=new Color(255, 255, 255);
         info1.setBackground(background);
         monoameValide.setBackground(background);
         rulesPanel.setBackground(new Color(152, 199, 108));

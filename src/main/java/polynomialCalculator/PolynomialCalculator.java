@@ -1,6 +1,6 @@
-package pt2021_30226_birlutiu_claudiu_assignment_1;
-
-import controllerCalculator.*;
+//Birlutiu Claudiu-Andrei
+package polynomialCalculator;
+import controllerCalculator.ControllerCalc;
 import viewCalculator.*;
 import modelClasses.*;
 

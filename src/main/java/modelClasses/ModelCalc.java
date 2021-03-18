@@ -9,6 +9,7 @@ public class ModelCalc {
     private Polynomial result;
     private Polynomial[] result2=new Polynomial[2];
 
+
     public ModelCalc(){
         result=new Polynomial();
     }
@@ -20,6 +21,8 @@ public class ModelCalc {
         this.result= Operations.subPolynomialOperation(p1,p2);
     }
     public void multiplyPolynomial(){ this.result=Operations.multiplyPolynomialOperation(p1,p2); }
+
+    //exceptiile sunt rearuncate cu mesaje specifice
     public void divPolynomial() throws Exception{
         try {
             this.result2 = Operations.divPolynomialOperation(p1, p2);
@@ -33,43 +36,38 @@ public class ModelCalc {
     public void dervPolynomial(){this.result=Operations.dervPolynomialOperation(p1 );}
     public void integratePolynomial(){this.result=Operations.integratePolynomialOperation(p1);}
 
-     public void patternMonomialList(String s, int choice) throws NumberFormatException{
+    //de la controller vine un polinom valid din care să se extragă monoame
+     public void patternMonomialList(String s, int choicePol) throws NumberFormatException{
         ArrayList<Monomial> monomials=new ArrayList<>();
+        //se folosesc grupuri indepedndete pentru forma unui monom
         String patternString = "([+-]?+(?:(?:\\d+(?:[Xx]|(?:\\*[xX]))(?:(?:\\^[1-9][0-9]*+)|(?:\\^[0]))?+)"+
                                                     "|(?:(?:[Xx])(?:(?:\\^[1-9][0-9]*+)|(?:\\^[0]))?+)|\\d+))";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(s);
         while (matcher.find()) {
             try {
+                //se extrage din grupul ce reprezinta un monom coeficientul și gradul acestuia
                 Integer[] monoCoeff=extractMonomial(matcher.group(1));
                 monomials.add(new MonomialInt(monoCoeff[0], monoCoeff[1]));
             }catch (NumberFormatException exc){
                 throw new NumberFormatException("Un numar a fost introdus gresit.\n " +
-                                   "Verificati daca numerele introduse sunt de lungime maxim 10");
+                                   "Verificati daca numerele introduse sunt de lungime maxim 9");
             }
         }
-        if(choice==1)
+        if(choicePol==1)
             this.p1 = new Polynomial(monomials);
 
         else
             this.p2 = new Polynomial(monomials);
-    }
-    public String getResult(){
-        return result.toString();
-    }
-    public String getCat(){
-        return result2[0].toString();
-    }
-    public String getRest(){
-        return result2[1].toString();
     }
 
     private Integer[] extractMonomial(String s) throws NumberFormatException {
         Integer[] monomCoeff = new Integer[2];
         monomCoeff[0] = 0;    //pentru coeficient
         monomCoeff[1] = 0;    //pentru grad
+        //s-au declarat separatorii astfel încat se pot extrage ca stringuri separate numărul ce reprezintă
+        // coeficientul și numărul ce reprezintă gradul.
         String[] parts = s.split("((?:\\*[Xx]\\^)|(?:\\*[Xx])|(?:[Xx]\\^)|(?:[Xx]))");
-
         if (parts.length == 0) {
             monomCoeff[0] = 1;
             monomCoeff[1] = 1;
@@ -95,4 +93,15 @@ public class ModelCalc {
         }
         return monomCoeff;
     }
+
+    public String getResult(){
+        return result.toString();
+    }
+    public String getCat(){
+        return result2[0].toString();
+    }
+    public String getRest(){
+        return result2[1].toString();
+    }
+
 }

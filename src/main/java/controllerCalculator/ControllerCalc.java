@@ -9,20 +9,26 @@ import java.util.regex.Pattern;
 import viewCalculator.*;
 import modelClasses.*;
 
+//rol in gestiunea evenimentelor ce se petrec la nivelul interfeței grafice.
 public class ControllerCalc {
     private View view;
     private ModelCalc model;
     private boolean enableOperation = false;
 
     public ControllerCalc(View view, ModelCalc model) {
+        //setează view-ul și model-ul pe care le controlează
         this.view = view;
         this.model = model;
 
+        //se adaugă listener-i pentru evenimentle din interfața grafică
+        //se va feace apelul metodelor din view cu obiecte ce implementează intefata ActionListener
+        //aceste obiecte sunt de tipul unei clase interne definte în cadrul clasei ControllerCalc
         view.addAddListener(new ButtonListener("+"));
         view.addSubListener(new ButtonListener("-"));
         view.addMultiplyListener(new ButtonListener("*"));
         view.addXListener(new ButtonListener("X"));
         view.addPowListener(new ButtonListener("^"));
+
         view.addDelListener(new DelListener());
         view.addClearListener(new ClearListener());
         view.addEqualListener(new EqualListener());
@@ -38,14 +44,13 @@ public class ControllerCalc {
         view.addNineListener(new ButtonListener("9"));
         view.addZeroListener(new ButtonListener("0"));
 
-        view.addTextFieldsActionListener(new TextFieldListener(this));
+        view.addTextFieldsActionListener(new TextFieldListener());
         view.addRadioButtonListener(new RadioButtonListener());
     }
 
-    public void setEnableOperation(boolean state) {
-        this.enableOperation = state;
-    }
-
+    //preia textul din căsuța selectată, află poziția cursorului, inserează valoarea butonului
+    // apăsat după cursor și setează poziția acestuia după caracterul inserat
+    //cu substring se imparte tesxtul în doua pentru adauga noul caracter
     public class ButtonListener implements ActionListener {
         private String inputString;
 
@@ -80,6 +85,40 @@ public class ControllerCalc {
         }
     }
 
+   //operația inversă celei descrise mai sus. se va sterge caracterul de dinainte cursorului
+    public class DelListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String a = "";
+            String b = "";
+            int caretPosition = view.getPositionText();
+            if (view.getTextFieldSelected() == 0 && view.getFirstPolInput().length() > 0 && caretPosition > 0) {
+                a = view.getFirstPolInput().substring(0, caretPosition - 1);
+                b = view.getFirstPolInput().substring(caretPosition);
+                view.setFirstPolynom(a + b);
+                view.setPositionText(caretPosition - 1);
+            } else if (view.getTextFieldSelected() == 1 && view.getSecondPolInput().length() > 0 && caretPosition > 0) {
+                a = view.getSecondPolInput().substring(0, caretPosition - 1);
+                b = view.getSecondPolInput().substring(caretPosition);
+                view.setSecondPolynom(a + b);
+                view.setPositionText(caretPosition - 1);
+            }
+        }
+    }
+
+    //seterge tot continutul din text-field-ul slelectat
+    public class ClearListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (view.getTextFieldSelected() == 0) {
+                view.setFirstPolynom("");
+            } else if (view.getTextFieldSelected() == 1) {
+                view.setSecondPolynom("");
+            }
+        }
+    }
+
+    //decrie logica răspunsului la apăsare butonului de egal
     public class EqualListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -114,53 +153,19 @@ public class ControllerCalc {
         }
     }
 
-    public class ClearListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (view.getTextFieldSelected() == 0) {
-                view.setFirstPolynom("");
-            } else if (view.getTextFieldSelected() == 1) {
-                view.setSecondPolynom("");
-            }
-        }
-    }
-
-    public class DelListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String a = "";
-            String b = "";
-            int caretPosition = view.getPositionText();
-            if (view.getTextFieldSelected() == 0 && view.getFirstPolInput().length() > 0 && caretPosition > 0) {
-                if (caretPosition > 0) {
-                    a = view.getFirstPolInput().substring(0, caretPosition - 1);
-                    b = view.getFirstPolInput().substring(caretPosition);
-                }
-                view.setFirstPolynom(a + b);
-                view.setPositionText(caretPosition - 1);
-            } else if (view.getTextFieldSelected() == 1 && view.getSecondPolInput().length() > 0 && caretPosition > 0) {
-                if (caretPosition > 0) {
-                    a = view.getSecondPolInput().substring(0, caretPosition - 1);
-                    b = view.getSecondPolInput().substring(caretPosition);
-                }
-                view.setSecondPolynom(a + b);
-                view.setPositionText(caretPosition - 1);
-            }
-        }
-    }
 
 
-    //pentru corectitudine input; text fieldul corespuzator va fi colorat verde sau rosu in functie de corectitudine
+
+
+
+    //pentru corectitudine input;
+    // text fieldul corespuzator va fi colorat verde sau rosu in functie de corectitudine
+    // în stringul folosit pentru pattern am încercat să includ cat mai multe cazuri neacceptate
+    //se setează și enableOperation pentru a anula efectuarea operațiilor când se apasă butonul de egal
     public class TextFieldListener implements CaretListener {
-        private ControllerCalc controller;
-
-        public TextFieldListener(ControllerCalc controller) {
-            this.controller = controller;
-        }
-
         @Override
         public void caretUpdate(CaretEvent e) {
-            Pattern pattern = Pattern.compile("([^Xx\\-+\\*\\^\\d]|(?:[+\\-\\^][+\\-\\*\\^])|(?:[0]+[1-9])" +
+            Pattern pattern = Pattern.compile("([^Xx\\-+\\*\\^\\d]|(?:[+\\-\\^][+\\-\\*\\^])|(?:[+-\\^][0]+[1-9])" +
                     "|(?:[Xx][\\*\\d])|(?:\\d\\*\\d)|(?:\\d\\^)|(?:\\^\\d\\*)|(?:[xX][Xx])|(?:\\^\\d+[Xx])|(?:[Xx]\\^[Xx]))");
             Matcher matcher = pattern.matcher(view.getFirstPolInput());
             boolean a, b;
@@ -179,20 +184,23 @@ public class ControllerCalc {
                 view.getTextFieldSecondPol().setBackground(new Color(152, 251, 152));
                 b = true;
             }
-            if (a && b ) {
-                controller.setEnableOperation(true);
-            } else {
-                controller.setEnableOperation(false);
-            }
+
+            enableOperation= a && b;
         }
     }
 
+    //listener pentru butoanele JRadio pentru selecția operației de executa
+    //Daca operație e derivare sau integrare, text-boxul celui de-al doilea polinom va dispăerea
+    //se va colora textul operașiei selectate cu roșu
     public class RadioButtonListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
             if(view.isSelectedOperation()==4 || view.isSelectedOperation()==5){
                 view.setSecondPolynom("");
+                view.enableSecondPol(false);
+            }else{
+                view.enableSecondPol(true);
             }
             view.setColorOperation();
         }

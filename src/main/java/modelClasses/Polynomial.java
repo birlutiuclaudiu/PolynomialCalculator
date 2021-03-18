@@ -5,15 +5,18 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class Polynomial {
+    //se respectă modelul matematic al unui polinom ca fiind format din monoame
   private ArrayList<Monomial> polynomial=new ArrayList<>();
-  static final double epsilon=0.00001;
+  
 
+  //se adauga monomul nul
     public Polynomial(){
         this.polynomial.add(new MonomialInt(0,0));
     }
 
     public Polynomial(ArrayList<Monomial> monomials){
         for(Monomial m:monomials) {
+            //pot exista duplicate la nivel de grad; in acest caz, metoda private addNewElement va rezolva acest caz
             this.addNewElement(m);
         }
         if(this.polynomial.isEmpty()){
@@ -21,7 +24,8 @@ public class Polynomial {
         }
     }
 
-    public void addElement(Monomial m){
+    //metoda publica care adauga o copie a unui monom in lista de monoame
+    public void addElement(final Monomial m){
         if(m instanceof MonomialInt )
              this.addNewElement(new MonomialInt(m));
         else
@@ -31,7 +35,9 @@ public class Polynomial {
             polynomial.add(new MonomialInt(0,0));
         }
     }
-
+    //auxiliar pentru adaugare element in lista de polinoame
+    //in cazul in care exista deja un element cu gradul acelasi ca al monomului transmis ca parametru se va face
+    //operatia de adunare intre aceste monoame
     private void addNewElement(Monomial m){
         if(polynomial.contains(m)) {
             int index = polynomial.indexOf(m);
@@ -49,19 +55,8 @@ public class Polynomial {
         return polynomial;
     }
 
-    @Override
-    public String toString(){
-        //se ordoneaza in orddinea descrescatoare a gradelor
-        Collections.sort(polynomial);
-        String output="";
-        for(Monomial m:polynomial){
-            output=output+m;
-        }
-        if(output.equals(""))
-            return "0";
-        return output;
-    }
 
+    //returneaza o copie a termenului dominant
     public Monomial leadingMon(){
         Monomial m=null;
         Integer maxDegree=0;
@@ -77,11 +72,14 @@ public class Polynomial {
             return new MonomialDouble(m);
         return  null;
     }
+
+    //gradul polinomului este gradul termenului dominant
     public Integer maxDegree(){
         Monomial m=this.leadingMon();
         return m.getDegree();
     }
 
+    //verificaă daca polinomul e nul; adică are termenul dominant monomul null
     public boolean isNull(){
        Monomial m=this.leadingMon();
        if(m.isNull()){
@@ -90,15 +88,27 @@ public class Polynomial {
        return false;
     }
 
+    //ordonează monoamele polinomului în ordine crescătoare a gradelor
     public void minMaxOrder(){
         Collections.sort(polynomial,new MinMaxDegreeComp());
     }
-    public void maxMinOrder(){
+    //ordonează monoamele polinomului în ordine descrescătoare a gradelor in lista
+    public void maxMinOrder(){ Collections.sort(polynomial); }
+    @Override
+    public String toString(){
+        //se ordoneaza in orddinea descrescatoare a gradelor
         Collections.sort(polynomial);
+        String output="";
+        for(Monomial m:polynomial){
+            output=output+m;
+        }
+        if(output.equals(""))
+            return "0";
+        return output;
     }
 
-
     //comparator pentru ordonare grade de la cel mai mic la cel mai mare; folositor pentru derivare
+    //clasă internă
     public class MinMaxDegreeComp implements Comparator<Monomial> {
         @Override
         public int compare(Monomial o1, Monomial o2) {

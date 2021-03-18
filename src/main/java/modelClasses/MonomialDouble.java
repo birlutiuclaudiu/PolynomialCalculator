@@ -3,18 +3,23 @@ package modelClasses;
 public class MonomialDouble extends Monomial{
 
     private Double doubleCoeff=null;
-    static final double epsilon=0.00001;
+    static final double EPSILON =0.00001;
 
     public MonomialDouble(Double doubleCoeff, Integer degree){
+        //se face apelul constructorului superclasei (Monomial)
         super(degree);
         this.doubleCoeff=doubleCoeff;
     }
 
+    //se creaza un monom identic cu cel transmis ca parametru
     public MonomialDouble(Monomial m){
         super(m.getDegree());
         this.doubleCoeff=(Double) m.getCoefficient();
     }
 
+    //sunt implementate metdoele abstracte din superclasa Monomial
+    //am folosit verificarea pesimista pentru a determina de ce tip e monomul trimis ca parametru
+    //metodele vor returna un monom de tipul coreszpunzator: MonomialInt sau MonomialDouble
     @Override
     public Monomial addMonomial(Monomial m) {
         if(degree.equals(m.getDegree())){
@@ -24,7 +29,7 @@ public class MonomialDouble extends Monomial{
             }else{
                  newCoeff=(Double) m.getCoefficient() + this.doubleCoeff;
             }
-            return Math.abs(newCoeff)<=epsilon? new MonomialDouble(0.0,0):
+            return Math.abs(newCoeff)<= EPSILON ? new MonomialDouble(0.0,0):
                         new MonomialDouble(newCoeff,this.degree);
             }
         return null;
@@ -39,7 +44,7 @@ public class MonomialDouble extends Monomial{
             }else{
                 newCoeff=-1.0*(Double) m.getCoefficient() + this.doubleCoeff;
             }
-            return Math.abs(newCoeff)<=epsilon? new MonomialDouble(0.0,0):
+            return Math.abs(newCoeff)<= EPSILON ? new MonomialDouble(0.0,0):
                     new MonomialDouble(newCoeff,this.degree);
         }
         return null;
@@ -53,32 +58,34 @@ public class MonomialDouble extends Monomial{
         }else{
             newCoeff=(Double) m.getCoefficient() * this.doubleCoeff;
         }
-        return Math.abs(newCoeff)<=epsilon? new MonomialDouble(0.0,0):
+        return Math.abs(newCoeff)<= EPSILON ? new MonomialDouble(0.0,0):
                     new MonomialDouble(newCoeff,this.degree+m.getDegree());
     }
 
     @Override
-    public Monomial divMonomial(Monomial m) {
+    public Monomial divMonomial(Monomial m)  throws ArithmeticException {
         Double newCoeff;
         if(m instanceof MonomialInt) {
             newCoeff= this.doubleCoeff/(Integer) m.getCoefficient();
         }else{
             newCoeff= this.doubleCoeff/(Double) m.getCoefficient() ;
         }
-        return Math.abs(newCoeff)<=epsilon? new MonomialDouble(0.0,0):
+        return Math.abs(newCoeff)<= EPSILON ? new MonomialDouble(0.0,0):
                       new MonomialDouble(newCoeff,this.degree-m.getDegree());
     }
 
+    //in cadrul dezvoltării aplicației se pot implementa aceste metode
     @Override
     public Monomial dervMonomial() {
         return null;
     }
-
     @Override
     public Monomial integrateMonomial() {
         return null;
     }
 
+
+    //se foloseste pentru scaderea polinoamelor; a-b <=> a+(-b)
     @Override
     public Monomial changeSign() {
         return new MonomialDouble((-1.0)*this.doubleCoeff,this.degree);
@@ -91,7 +98,7 @@ public class MonomialDouble extends Monomial{
 
     @Override
     public boolean isNull(){
-        if(Math.abs(this.doubleCoeff)<=epsilon)
+        if(Math.abs(this.doubleCoeff)<= EPSILON)
             return true;
         return false;
     }
@@ -100,13 +107,14 @@ public class MonomialDouble extends Monomial{
     public String toString(){
         String partCoeff="";
 
-        if(Math.abs(this.doubleCoeff)<=epsilon){
+        if(Math.abs(this.doubleCoeff)<= EPSILON){
             return "";
         }
-        if( Math.abs(this.doubleCoeff-1.0)<=epsilon) {
+        if( Math.abs(this.doubleCoeff-1.0)<= EPSILON) {
                 partCoeff = this.degree == 0 ? "+1" : "+";
         }else {
                 partCoeff=this.doubleCoeff>0.0? "+":"";
+                //rationament pentru a afisa doar cu doua zecimale coeficientul double
                 Double str=Math.round(doubleCoeff*100.0)/100.0;
                 partCoeff += str.toString();
         }

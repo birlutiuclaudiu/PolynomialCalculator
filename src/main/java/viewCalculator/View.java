@@ -5,7 +5,6 @@ import javax.swing.event.CaretListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 
 import modelClasses.*;
@@ -20,10 +19,11 @@ public class View extends JFrame {
     private  ModelCalc model;
     private  JTextField firstPolynom = new JTextField();
     private  JTextField secondPolynom = new JTextField();
+    private final JLabel secondPolynomLabel = new JLabel("Second Polynomial: ");
     private final JLabel resultLabel = new JLabel("RESULT ");
-    private final JTextField resultField = new JTextField();
-    private final JLabel catLabel = new JLabel("Cat: ");
-    private final JLabel restLabel = new JLabel("Rest: ");
+    private JTextField resultField = new JTextField();
+    private final JLabel catLabel = new JLabel("Quotient: ");
+    private final JLabel restLabel = new JLabel("Remainder: ");
     private  JTextField catText = new JTextField();
     private  JTextField restText = new JTextField();
     private final JRadioButton btMultiply2 = new JRadioButton("  *  Multiplication");
@@ -57,23 +57,13 @@ public class View extends JFrame {
         this.setPreferredSize(new Dimension(750, 900));
         this.setMinimumSize(new Dimension(750, 900));
 
-        ArrayList<AbstractButton> buttonsList = new ArrayList<AbstractButton>();
-        buttonsList.add(btOne);buttonsList.add(btTwo);buttonsList.add(btThree);buttonsList.add(btFour);
-        buttonsList.add(btFive);buttonsList.add(btSix);buttonsList.add(btSeven);buttonsList.add(btEight);
-        buttonsList.add(btNine);buttonsList.add(btZero);buttonsList.add(btAdd);buttonsList.add(btSub);
-        buttonsList.add(btMultiply);buttonsList.add(btX);buttonsList.add(btPow);buttonsList.add(btDel);
-        buttonsList.add(btResult);buttonsList.add(btAdd2);buttonsList.add(btMultiply2);buttonsList.add(btDiv2);
-        buttonsList.add(btIntegration2);buttonsList.add(btDerivate2);buttonsList.add(btDiv2);buttonsList.add(btSub2);
-        buttonsList.add(btClear);
-        for (AbstractButton e : buttonsList) {
-            e.setFocusable(false);
-            e.setFont(fDigit);
-        }
-
         //fac doua panel-uri; unul pentru calcule si unul pt informatii
         JTabbedPane tabbedPane = new JTabbedPane();
         //un panel pentru informatii
         JPanel infoPanel = new InfoPanel();
+
+        //pentru a dezactiva focusul cand se da click pe buton
+        this.disableFocus();
 
         //panel-ul principal la care se adauga celelate panel-uri: input, result, opertions, butoane cifre si semne
         JPanel mainPanel = new JPanel();
@@ -81,7 +71,7 @@ public class View extends JFrame {
         titleCalc.setFont(new Font("Serif", Font.BOLD, 30));
 
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(titleCalc); titleCalc.setForeground(new Color(255,255,255));
+        mainPanel.add(titleCalc);      titleCalc.setForeground(new Color(255,255,255));
         titleCalc.setAlignmentX(0.5f);
 
         JPanel panelInput = new JPanel();
@@ -96,15 +86,15 @@ public class View extends JFrame {
         firstPanelPolynomial.add(firstPolynom);  firstPolynom.setFont(outputFont);
 
         JPanel secondPanelPolynomial = new JPanel();
-        JLabel l2 = new JLabel("Second Polynomial: ");
-        l2.setFont(f1);  l2.setForeground(new Color(255,255,255));
-        secondPanelPolynomial.add(l2);
+        secondPolynomLabel.setFont(f1);  secondPolynomLabel.setForeground(new Color(255,255,255));
+        secondPanelPolynomial.add(secondPolynomLabel);
         secondPolynom.setPreferredSize(new Dimension(2 * this.getWidth() / 3, 30));
         secondPanelPolynomial.add(secondPolynom); secondPolynom.setFont(outputFont);
 
         panelInput.add(firstPanelPolynomial);
         panelInput.add(secondPanelPolynomial);
 
+        //pentru panoul de rezultate
         JPanel resultPanel = new JPanel();
         resultPanel.add(resultLabel);
         resultLabel.setFont(fDigit);
@@ -121,7 +111,7 @@ public class View extends JFrame {
         catText.setVisible(false);  catText.setFont(outputFont);
         catLabel.setVisible(false);
 
-
+        //panoul de operatii mateamtice pe polinoame
         JPanel operationPanel = new JPanel();
         operationPanel.setPreferredSize(new Dimension(2 * this.getWidth() / 3, 100));
         operationPanel.setLayout(new GridLayout(3, 2, 6, 4));
@@ -147,6 +137,7 @@ public class View extends JFrame {
         groupOperation.add(btIntegration2); btIntegration2.setBackground(bgColor);
 
 
+        //panourile pentru cifre si semne
         JPanel userPanel = new JPanel();
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.X_AXIS));
         userPanel.setPreferredSize(new Dimension(2 * this.getWidth() / 3, 100));
@@ -187,7 +178,7 @@ public class View extends JFrame {
         userPanel.add(signPanel2);
 
         //setare culori panel-uri
-        resultPanel.setBackground(new Color(0, 239, 49, 255));
+        resultPanel.setBackground(new Color(0, 255, 24, 255));
         secondPanelPolynomial.setBackground(bgColor);
         firstPanelPolynomial.setBackground(bgColor);
         operationPanel.setBackground(bgColor);
@@ -201,6 +192,7 @@ public class View extends JFrame {
         mainPanel.add(userPanel);
         tabbedPane.add("New Calculus", mainPanel);
         tabbedPane.add("Info", infoPanel);
+
 
         this.setContentPane(tabbedPane);
         this.pack();
@@ -327,6 +319,8 @@ public class View extends JFrame {
             button.addActionListener(e);
             }
     }
+
+    //pentru selectia operatiei
     public void setColorOperation(){
         for (Iterator<AbstractButton> buttons = groupOperation.getElements().asIterator(); buttons.hasNext(); ) {
             AbstractButton button = buttons.next();
@@ -337,6 +331,11 @@ public class View extends JFrame {
                 button.setForeground(Color.white);
             }
         }
+    }
+    //pentru a exlude sau include al doilea polinom in functie de operatie
+    public void enableSecondPol(boolean choice){
+        this.secondPolynom.setVisible(choice);
+        this.secondPolynomLabel.setVisible(choice);
     }
 
 
@@ -363,5 +362,22 @@ public class View extends JFrame {
         resultField.setVisible(false);
         restText.setText(model.getRest());
         catText.setText(model.getCat());
+    }
+
+    //metoda ce deazativeaza focus-ul pe un buton cand este apasat
+    private void disableFocus(){
+        //ca sa nu le scriu de 2 ori l-am adaugat intr-o lista de butoane
+        ArrayList<AbstractButton> buttonsList = new ArrayList<>();
+        buttonsList.add(btOne);buttonsList.add(btTwo);buttonsList.add(btThree);buttonsList.add(btFour);
+        buttonsList.add(btFive);buttonsList.add(btSix);buttonsList.add(btSeven);buttonsList.add(btEight);
+        buttonsList.add(btNine);buttonsList.add(btZero);buttonsList.add(btAdd);buttonsList.add(btSub);
+        buttonsList.add(btMultiply);buttonsList.add(btX);buttonsList.add(btPow);buttonsList.add(btDel);
+        buttonsList.add(btResult);buttonsList.add(btAdd2);buttonsList.add(btMultiply2);buttonsList.add(btDiv2);
+        buttonsList.add(btIntegration2);buttonsList.add(btDerivate2);buttonsList.add(btDiv2);buttonsList.add(btSub2);
+        buttonsList.add(btClear);
+        for (AbstractButton e : buttonsList) {
+            e.setFocusable(false);
+            e.setFont(fDigit);
+        }
     }
 }
