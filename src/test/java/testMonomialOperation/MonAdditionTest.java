@@ -5,9 +5,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.util.ArrayList;
 import java.util.List;
-import modelClasses.Monomial;
-import modelClasses.MonomialInt;
-import modelClasses.MonomialDouble;
+import model.Monomial;
+import model.MonomialInt;
+import model.MonomialDouble;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

@@ -1,8 +1,8 @@
 //Birlutiu Claudiu-Andrei
-package polynomialCalculator;
-import controllerCalculator.ControllerCalc;
-import viewCalculator.*;
-import modelClasses.*;
+package polynomial;
+import controller.ControllerCalc;
+import view.*;
+import model.*;
 
 public class PolynomialCalculator {
 

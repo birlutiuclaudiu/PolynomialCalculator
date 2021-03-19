@@ -1,4 +1,4 @@
-package modelClasses;
+package model;
 
 //clasa pentru monomul cu coeficient intreg
 public class MonomialInt extends Monomial{

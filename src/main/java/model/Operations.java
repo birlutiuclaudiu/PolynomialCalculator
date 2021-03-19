@@ -1,4 +1,4 @@
-package modelClasses;
+package model;
 
 //clasa ce are implementate a operațiile pe polinoame
 //in lista de parametri a metodelor este specificat atributul final ce ii garantează utilizatorului că polinoamele trimise

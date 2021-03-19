@@ -1,4 +1,4 @@
-package controllerCalculator;
+package controller;
 
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -6,8 +6,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import viewCalculator.*;
-import modelClasses.*;
+import view.*;
+import model.*;
 
 //rol in gestiunea evenimentelor ce se petrec la nivelul interfeței grafice.
 public class ControllerCalc {

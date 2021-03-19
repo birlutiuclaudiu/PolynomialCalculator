@@ -1,4 +1,4 @@
-package modelClasses;
+package model;
 
 //clasa abstracta ce descrie modelul matematic de monom
 public abstract class Monomial implements Comparable<Monomial>{

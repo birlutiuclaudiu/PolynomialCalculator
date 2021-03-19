@@ -1,4 +1,4 @@
-package viewCalculator;
+package view;
 
 import javax.swing.*;
 import javax.swing.event.CaretListener;
@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import modelClasses.*;
+import model.*;
 
 public class View extends JFrame {
 

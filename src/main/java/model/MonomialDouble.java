@@ -1,4 +1,4 @@
-package modelClasses;
+package model;
 
 public class MonomialDouble extends Monomial{
 
